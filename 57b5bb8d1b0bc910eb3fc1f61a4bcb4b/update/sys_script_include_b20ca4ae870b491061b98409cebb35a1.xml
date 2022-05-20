@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_itsp_its_localiz.SheetGenerator</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>SheetGenerator</name>
+        <script><![CDATA[var SheetGenerator = Class.create();
+SheetGenerator.prototype = {
+    initialize: function() {
+		
+		//var table = "sys_app";
+		
+    },
+	gatherRecordsFromTable: function(table, scope){
+		var output = "key, language, message, sys_created_on, sys_updated_on, sys_name, sys_scope";
+		var recordId = "";// use for attachment file
+		var recordsGR = new GlideRecord(table);
+		recordsGR.addQuery("sys_scope", scope);
+		recordsGR.query();
+		var count = 0;
+		while(recordsGR.next()){
+			count++;
+			output += "\n" + recordsGR.getDisplayValue("key") + "," + recordsGR.getDisplayValue("language") + "," +recordsGR.getDisplayValue("message") + "," + recordsGR.getDisplayValue("sys_created_on") + "," + recordsGR.getDisplayValue("sys_updated_on") + "," + recordsGR.getDisplayValue("sys_name") + "," + recordsGR.getDisplayValue("sys_scope");
+			
+			if (!recordId){
+				recordId = recordsGR.getUniqueValue();
+			}
+		}
+		gs.info(recordId);
+		this.writeAttachment(output, table, recordId);
+	},
+	writeAttachment: function(data, table, recordId){
+		var attachment = new global.Attachment();
+		var attachmentRec = attachment.write(table, recordId, "export.csv", "text/csv", data);
+	},
+    type: 'SheetGenerator'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sbrown@itsdelivers.com</sys_created_by>
+        <sys_created_on>2022-04-26 20:44:00</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>b20ca4ae870b491061b98409cebb35a1</sys_id>
+        <sys_mod_count>9</sys_mod_count>
+        <sys_name>SheetGenerator</sys_name>
+        <sys_package display_value="ITS Localization Util" source="x_itsp_its_localiz">57b5bb8d1b0bc910eb3fc1f61a4bcb4b</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ITS Localization Util">57b5bb8d1b0bc910eb3fc1f61a4bcb4b</sys_scope>
+        <sys_update_name>sys_script_include_b20ca4ae870b491061b98409cebb35a1</sys_update_name>
+        <sys_updated_by>sbrown@itsdelivers.com</sys_updated_by>
+        <sys_updated_on>2022-04-26 21:15:18</sys_updated_on>
+    </sys_script_include>
+</record_update>

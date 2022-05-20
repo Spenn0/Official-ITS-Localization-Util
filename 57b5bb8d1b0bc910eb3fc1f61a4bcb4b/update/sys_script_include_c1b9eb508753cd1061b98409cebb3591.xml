@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_itsp_its_localiz.GetTableData</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>GetTableData</name>
+        <script><![CDATA[var GetTableData = Class.create();
+GetTableData.prototype = {
+    initialize: function() {
+    },
+	getTableData: function(table){
+		var tableDataArray = [];
+		var tableDataGR = new GlideRecord('sys_dictionary');
+			tableDataGR.addQuery('name', table);
+			tableDataGR.query();
+			while (tableDataGR.next()){
+				//gs.info(' Column Label: ' + tableDataGR.getValue("column_label") + tableDataGR.getValue("column_label").typeOf());
+				if(tableDataGR.getValue("column_label") === null){
+					gs.info('null');
+				}else{
+				//var dataObj = {columnName: tableDataGR.getValue("element"), columnLabel: tableDataGR.getValue("column_label")};
+				var dataObj = tableDataGR.getValue("element");//column_label
+				JSON.stringify(dataObj);
+				tableDataArray.push(dataObj);
+				}
+			}
+	gs.info("tableDataArray IN GETTABLEDATA __________: " + tableDataArray);
+	//gs.info("tableDataArray Stringified: " + JSON.stringify(tableDataArray));
+	//JSON.stringify(tableDataArray);
+	return tableDataArray; 
+	},
+    type: 'GetTableData'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>sbrown@itsdelivers.com</sys_created_by>
+        <sys_created_on>2022-05-02 21:07:20</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>c1b9eb508753cd1061b98409cebb3591</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>GetTableData</sys_name>
+        <sys_package display_value="ITS Localization Util" source="x_itsp_its_localiz">57b5bb8d1b0bc910eb3fc1f61a4bcb4b</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ITS Localization Util">57b5bb8d1b0bc910eb3fc1f61a4bcb4b</sys_scope>
+        <sys_update_name>sys_script_include_c1b9eb508753cd1061b98409cebb3591</sys_update_name>
+        <sys_updated_by>sbrown@itsdelivers.com</sys_updated_by>
+        <sys_updated_on>2022-05-03 18:14:40</sys_updated_on>
+    </sys_script_include>
+</record_update>
