@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller = function ($http, $location) {
+  /* widget controller */
+  var c = this;
+  var params = $location.search();
+  c.targetSysId = params.sysId;
+  console.log("TARGET SYS ID: " + c.targetSysId);
+  c.chooseTables = [
+    { table: "sys_ui_message", id: 1 },
+    { table: "sys_translated", id: 2 },
+    { table: "sys_translated_text", id: 3 },
+    { table: "sys_documentation", id: 4 },
+		{ table: "sys_choice", id: 5 }
+  ];
+  c.tableValues = {
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+		5: false,
+  };
+
+  c.formSubmission = function (valuesObj) {
+    console.log("valuesObj: " + JSON.stringify(valuesObj));
+    if (valuesObj[1] === true) {
+      console.log(
+        "CHOSEN TABLES: " + "sys_ui_message" + "ADD THE SYS_UI_MESSAGE TABLE"
+      );
+      c.serverGetData("sys_ui_message");
+    }
+    if (valuesObj[2] === true) {
+      console.log(
+        "CHOSEN TABLES: " + "sys_translated" + "ADD THE SYS_TRANSLATED TABLE"
+      );
+      c.serverGetData("sys_translated");
+    }
+    if (valuesObj[3] === true) {
+      console.log(
+        "CHOSEN TABLES: " +
+          "sys_translated_text" +
+          "ADD THE SYS_TRANSLATED_TEXT TABLE"
+      );
+      //c.metadataGather();
+      c.serverGetData("sys_translated_text");
+    }
+    if (valuesObj[4] === true) {
+      console.log(
+        "CHOSEN TABLES: " +
+          "sys_documentation" +
+          "ADD THE SYS_DOCUMENTATION TABLE"
+      );
+      c.serverGetData("sys_documentation");
+    }
+		  if (valuesObj[5] === true) {
+      console.log(
+        "CHOSEN TABLES: " +
+          "sys_documentation" +
+          "ADD THE SYS_DOCUMENTATION TABLE"
+      );
+      c.serverGetData("sys_choice");
+    }
+    //	}
+  };
+
+  c.metadataGather = function () {
+    c.server
+      .get({
+        action: "getMetadataRecords"
+      })
+      .then(function (r) {
+       console.log("THE RETURN:" + JSON.stringify(r));
+      });
+  };
+  //	c.forEachTable = function(tableArray){
+  //		for(var i = 0; i < tableArray.length; i++){
+  //			console.log("PRINT: " + tableArray[i]);
+  //			if(tableArray[i] === 'sys_metadata_link'){
+  //				console.log("MAKE A FUNCTION THAT LOOPS OVER SYS_TRANSLATED_TEXT FILES AND FINDS ONES THAT EXIST ON THE SYS_METADATA_LINK TABLE")
+  //			} else if(tableArray[i] === 'sys_ui_message'){
+  //				c.serverGetData(tableArray[i].toString());
+  //			} else if(tableArray[i] === 'sys_translated'){
+  //				c.serverGetData(tableArray[i].toString());
+  //			}
+  //		}
+
+  //	}
+
+  c.serverGetData = function (table) {
+    console.log("TABLE PRINT: " + table);
+    c.server
+      .get({
+        action: "getTableData",
+        table: table
+      })
+      .then(function (r) {
+        console.log("THE RETURN:" + typeof r);
+        var parameters = r.data.tableData;
+        console.log("return of r.data.tableData " + r.data.tableData);
+        c.httpCall(table, parameters);
+        console.log("parameters: " + r.data.tableData);
+      });
+  };
+
+  c.httpCall = function (table, parameters) {
+    console.log(
+      "Table: " +
+        table +
+        " Parameters: " +
+        parameters +
+        "sys_id: " +
+        c.targetSysId
+    );
+    // Simple GET request example:
+	//	if(table != 'sys_translated_text'){
+    $http({
+      method: "GET",
+      url:
+        "poll_processor.do?sysparm_processor=poll_processor&sysparm_query=sys_scope=" +
+        c.targetSysId +
+        "&sysparm_target=" +
+        table +
+        "&sysparm_export=unload_excel_xlsx&sys_action=init&sysparm_fields=" +
+        parameters
+      //&sysparm_fields=application,key,language,message,sys_name
+    }).then(
+      function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+        c.returning = response;
+        console.log(c.returning);
+      },
+      function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+      }
+    );
+	//	} else {
+	//		    $http({
+			
+  //    method: "GET",
+  //    url:
+  //      "poll_processor.do?sysparm_processor=poll_processor&sysparm_query=sys_scope=" +
+  //      c.targetSysId +
+  //      "&sysparm_target=" +
+  //      table +
+  //      "&sysparm_export=unload_excel_xlsx&sys_action=init&sysparm_fields=" +
+  //      parameters
+      //&sysparm_fields=application,key,language,message,sys_name
+  //  }).then(
+  //    function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+  //      c.returning = response;
+  //      console.log(c.returning);
+  //    },
+  //    function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+  //    }
+  //  );
+	//	}
+  };
+};
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;800&amp;display=swap');
+.whole-widget {
+ // background-image: url("spencers_edited_its_background.png");
+  //background-position: center;
+  font-family: "Sora";
+  background-color: black;
+  width: 560px;
+  height: 400px;
+}
+.header-holder{
+display: flex;
+justify-content: space-evenly;
+}
+.its-arrow {
+width: 145px;
+height: 115px;
+margin-top: 15px;
+display:flex;
+justify-content:end;
+flex-direction:row;
+}
+.header {
+color: white;
+display:flex;
+margin-left: 25px;
+margin-top: 40px;
+font-size: 32px;
+}
+.form-box{
+color: white;
+background-color: #767676;
+height: 220px;
+//opacity: 50%;
+margin-left: 25px;
+margin-right: 25px;
+//padding-top: px;
+padding-left: 10px;
+}
+.form-box-header{
+font-size: 23px;
+padding-top: 20px;
+padding-bottom: 15px;
+padding-left: 10px;
+}
+.form{
+justify-content: space-between;
+display: flex;
+flex-direction: column;
+//flex-wrap: wrap;
+
+width: 100%;
+align-items: center;
+}
+.checkbox-container{
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: space-between;
+height: 100px;
+margin-left: 50px;
+}
+.checkboxes{
+display: flex;
+flex-basis: 50%;
+
+
+//flex-direction: row;
+//display:inline-block
+//align-items:space-around;
+//flex:4;
+//justify-content: center;
+//flex-wrap: wrap;
+//flex: 50%
+
+}
+.label{
+  font-size: 13px;
+  font-weight: 400;
+ // width: 50%;
+ //justify-content: start;
+// float: left;
+ // align-items: baseline;
+ // align-items: center;
+}
+.checkbox{
+  //width: 50%;
+  //float: left;
+ // verticle-align: middle;
+  
+}
+.generate-button{
+font-weight: 400;
+width: 18%;
+color: black;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>localization_excel_sheet_generator</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Localization Excel Sheet Generator</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function () {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+
+  data.currentApp = gs.getCurrentApplicationId();
+  data.metadata = [];
+  if (input) {
+    console.log("made it into input");
+    console.log("CURRENT APP" + data.currentApp);
+    if (input.action === "getTableData") {
+      console.log("made it to input.action");
+      var pullTableData = new x_itsp_its_localiz.GetTableData();
+      data.tableData = pullTableData.getTableData(input.table);
+
+      console.log("DATA.TABLEDATA: " + data.tableData.toString());
+    }
+  // if (input.action === "getMetadataRecords") {
+  //    var metadataGR = new GlideRecord("sys_metadata_link");
+  //    var query = "sys_name!=NULL^tablename=sys_translated_text";
+  //    metadataGR.addQuery("tablename", "sys_translated_text");
+  //    metadataGR.addQuery("sys_name", !"NULL");
+  //    metadataGR.query();
+  //    while (metadataGR.next()) {
+  //      console.log("THIS IS METADATAGR: " + JSON.stringify(metadataGR));
+  //      data.metadata.push(metadataGR.documentkey);
+  //     var translatedGR = new GlideRecord("sys_translated_text");
+  //      var translatedRecord = translatedGR.get(metadataGR.documentkey);
+  //      console.log("THIS IS THE TRANSLATED RECORD " + translatedRecord);
+  //    }
+  //  }
+  }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>sbrown@itsdelivers.com</sys_created_by>
+        <sys_created_on>2022-04-26 17:36:58</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>e3b4842687c7491061b98409cebb35a7</sys_id>
+        <sys_mod_count>474</sys_mod_count>
+        <sys_name>Localization Excel Sheet Generator</sys_name>
+        <sys_package display_value="ITS Localization Util" source="x_itsp_its_localiz">57b5bb8d1b0bc910eb3fc1f61a4bcb4b</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="ITS Localization Util">57b5bb8d1b0bc910eb3fc1f61a4bcb4b</sys_scope>
+        <sys_update_name>sp_widget_e3b4842687c7491061b98409cebb35a7</sys_update_name>
+        <sys_updated_by>sbrown@itsdelivers.com</sys_updated_by>
+        <sys_updated_on>2022-05-19 20:35:42</sys_updated_on>
+        <template><![CDATA[<div class="whole-widget">
+  <!-- your widget template -->
+  <div class="header-holder">
+    <h1 class="header">Excel Sheet Generator for Localization Tables</h1>
+    <img src="new_its_arrow.png" class="its-arrow" />
+  </div>
+  <div class="form-box">
+    <h2 class="form-box-header">
+      Generate Excel Sheets for: 
+    </h2>
+    <form name="myForm" ng-submit="c.formSubmission(c.tableValues)" class="form">
+      <div class="checkbox-container">
+      <section ng-repeat="table in c.chooseTables" class="checkboxes">
+        <input
+          type="checkbox"
+          ng-model="c.tableValues[table.id]"
+          value="{{table.id}}"
+          class="checkbox"
+        />
+        <label class="label">{{table.table}}</label>
+        </section>
+     <!-- <p>tableValues: {{c.tableValues}}</p> -->
+</div>
+      <input type="submit" id="submit" value="Generate" class="generate-button"/>
+    </form>
+  </div>
+
+  <p ng-model="c.returning">{{c.returning}}</p>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>
